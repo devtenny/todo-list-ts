@@ -1,26 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import styled from "styled-components";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import TodoList from './component/TodoList';
+
+export default class App extends React.Component {
+  render() {
+    return(
+      <TodoListZone>
+        <h1>Typescript로 todo-list 만들기</h1>
+        <TodoList/>
+      </TodoListZone>
+    )
+  }
 }
 
-export default App;
+const TodoListZone = styled.div`
+  margin-top: 60px;
+  text-align: center;
+`;
