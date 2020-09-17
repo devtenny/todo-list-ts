@@ -1,3 +1,5 @@
+<img width="1648" alt="스크린샷 2020-09-17 오후 6 28 35" src="https://user-images.githubusercontent.com/45069571/93452688-abc91b80-f913-11ea-81ce-ed40e6ce3c91.png">
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
