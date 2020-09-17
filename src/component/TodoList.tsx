@@ -4,16 +4,29 @@ import styled from "styled-components";
 import TodoInput from "./TodoInput";
 import TodoItemList from "./TodoItemList";
 
+// 공통적으로 사용되는(고정된) 타입 지정은 따로 해주는 것이 좋음
+// 이런 경우가 많을 때는 아예 다른 파일로 분리시켜서 export-iport해서 사용하는 것이 좋음
+interface Todo {
+  id: number;
+  text: string;
+  checked: boolean;
+  updated: boolean;
+}
+
 // state와 props는 interface(or type)으로 처리
-interface State {
-  inputText: string;
-  updateText: string;
-  todos: Array<{
-    id: number;
-    text: string;
-    checked: boolean;
-    updated: boolean;
-  }>;
+// 한 파일에서 사용할 state에 대한 타입 지정은 같은 파일 내에서 이루어지는 것이 좋음
+export interface State {
+  // 다른 파일에서 import해서 사용하고 싶을 경우 반드시 export 시켜줄 것
+  inputText?: string;
+  updateText?: string;
+  todos: Todo[]; // 따로 배열 요소들의 타입을 지정해주고 가져와서 사용하는 것이 best
+  // 아래와 같이 타입을 선언해줘도 가능하나 best는 아님
+  // todos: Array<{
+  //   id: number;
+  //   text: string;
+  //   checked: boolean;
+  //   updated: boolean;
+  // }>;
 }
 
 export default class TodoList extends React.Component<{}, State> {
@@ -22,27 +35,157 @@ export default class TodoList extends React.Component<{}, State> {
     inputText: "",
     updateText: "",
     todos: [
-      { id: 0, text: "첫번째", checked: false, updated: false },
-      { id: 1, text: "두번째", checked: false, updated: false },
-      { id: 2, text: "세번째", checked: false, updated: false },
-      { id: 3, text: "네번째", checked: false, updated: false },
+      {
+        id: 0,
+        text: "할 일을 작성한 후 엔터를 누르거나 등록 버튼을 누르세요.",
+        checked: false,
+        updated: false,
+      },
+      {
+        id: 1,
+        text: "완료한 항목은 한번 클릭하세요.",
+        checked: true,
+        updated: false,
+      },
+      {
+        id: 2,
+        text: "수정하려면 두번 클릭하세요.",
+        checked: false,
+        updated: true,
+      },
+      {
+        id: 3,
+        text: "삭제하려면 우측 삭제 버튼을 눌러주세요.",
+        checked: false,
+        updated: false,
+      },
     ],
+  };
+  // 할 일 추가 Change, Click, KeyPress
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      inputText: e.target.value,
+    });
+  };
+  handleClick = () => {
+    const { inputText, todos } = this.state;
+    if (inputText !== "") {
+      this.setState({
+        inputText: "",
+        todos: todos.concat({
+          id: this.id++,
+          text: inputText,
+          checked: false,
+          updated: false,
+        }),
+        updateText: inputText,
+      });
+    }
+  };
+  handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      this.handleClick();
+    }
+  };
+
+  // 할 일 완료/미완료 표시
+  handleToggle = (id: number) => {
+    const { todos } = this.state;
+    const selected = todos[id];
+    selected.checked = !selected.checked;
+    todos[id] = selected;
+    this.setState({
+      todos: todos,
+    });
+  };
+
+  // 할 일 삭제
+  handleRemove = (id: number) => {
+    const { todos } = this.state;
+    this.setState({
+      todos: todos.filter((newTodos) => newTodos.id !== id),
+    });
+  };
+
+  // 할 일 수정
+  handleUpdate = (id: number) => {
+    const { todos } = this.state;
+    const selected = todos[id];
+    selected.updated = !selected.updated;
+    todos[id] = selected;
+    const text = todos[id].text;
+    this.setState({
+      todos: todos,
+      updateText: text,
+    });
+  };
+  handleUpdateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      updateText: e.target.value,
+    });
+  };
+  handleUpdateKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    id: number
+  ) => {
+    if (e.key === "Enter") {
+      this.handleUpdateDone(id);
+    } else if (e.keyCode === 27) {
+      const { todos } = this.state;
+      const selectedTodo = todos[id];
+      selectedTodo.updated = !selectedTodo.updated;
+      todos[id] = selectedTodo;
+      this.setState({
+        todos: todos,
+        updateText: "",
+      });
+    }
+  };
+  handleUpdateDone = (id: number) => {
+    const { todos, updateText } = this.state;
+    const selected = todos[id];
+    selected.updated = !selected.updated;
+    selected.text = updateText;
+    todos[id] = selected;
+    this.setState({
+      todos: todos,
+      updateText: "",
+    });
   };
 
   render() {
+    const { inputText, updateText, todos } = this.state;
     return (
       <TodoListDiv>
-        <TodoTitleH1>Todo-List</TodoTitleH1>
-        <TodoInput />
-        {/* <TodoItemList 
-        todos={this.todos}/> */}
+        <TodoListDiv2>
+          <TodoTitleH1>오늘 할 일</TodoTitleH1>
+          <ListDiv>
+            <TodoInput
+              todos={todos}
+              inputText={inputText}
+              onChange={this.handleChange}
+              onClick={this.handleClick}
+              onKeyPress={this.handleKeyPress}
+            />
+            <TodoItemList
+              inputText={inputText}
+              updateText={updateText}
+              todos={todos}
+              onClick={this.handleRemove}
+              onToggle={this.handleToggle}
+              onUpdate={this.handleUpdate}
+              onUpdateChange={this.handleUpdateChange}
+              onKeyPress={this.handleUpdateKeyPress}
+            />
+          </ListDiv>
+        </TodoListDiv2>
       </TodoListDiv>
     );
   }
 }
 
 const TodoListDiv = styled.div`
-  width: 440px;
+  width: 500px;
   height: 770px;
   margin: 20px auto 72px auto;
   border-radius: 20px;
@@ -52,11 +195,27 @@ const TodoListDiv = styled.div`
   background-color: #f0e5de;
 `;
 
-const TodoTitleH1 = styled.h1`
+const TodoListDiv2 = styled.div`
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
   margin: 20px;
+  height: 710px;
+  border-radius: 20px;
+`;
+
+const TodoTitleH1 = styled.h1`
+  margin: 0px 0px -20px 0px;
   padding: 20px;
   background-color: #abd0ce;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
   border-radius: 20px 20px 0 0;
   color: white;
+  height: 50px;
+  font-family: "Jua", san-serif;
+  font-weight: 500;
+`;
+
+const ListDiv = styled.div`
+  font-family: "Nanum Gothic", sans-serif;
+  background-color: white;
+  height: 640px;
+  border-radius: 0 0 20px 20px;
 `;

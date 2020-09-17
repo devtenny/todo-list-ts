@@ -1,21 +1,30 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 import styled from "styled-components";
 
-import TodoList from './component/TodoList';
+import TodoList from "./component/TodoList";
 
 export default class App extends React.Component {
   render() {
-    return(
+    return (
       <TodoListZone>
-        <h1>Typescript로 todo-list 만들기</h1>
-        <TodoList/>
+        <TitleH1>
+          Typescript & React로
+          <br />
+          todo-list 만들기
+        </TitleH1>
+        <TodoList />
       </TodoListZone>
-    )
+    );
   }
 }
 
 const TodoListZone = styled.div`
   margin-top: 60px;
+`;
+
+const TitleH1 = styled.h2`
   text-align: center;
+  font-family: "Jua", san-serif;
+  font-weight: 500;
 `;
