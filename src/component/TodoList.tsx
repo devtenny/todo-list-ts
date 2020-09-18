@@ -63,6 +63,7 @@ export default class TodoList extends React.Component<{}, State> {
   };
   // 할 일 추가 Change, Click, KeyPress
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 타입스크립트를 사용할 경우 이벤트에 대한 타입 지정도 필요함
     this.setState({
       inputText: e.target.value,
     });
