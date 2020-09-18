@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { State as TodoListState } from "./TodoList";
+import { State as TodoListState } from './TodoList';
 
 interface Props extends TodoListState {
   onClick: (id: number) => void;
@@ -23,7 +23,7 @@ export default function TodoItemList({
   const todoItemList = todos.map(({ id, text, checked, updated }) => (
     <TodoItemListDiv key={id}>
       <TodoItemDiv
-        className={checked ? "checked" : ""} // checked가 true면 클래스명이 "checked", false면 ""
+        isChecked={checked} // checked가 true면 클래스명이 "checked", false면 ""
         onClick={() => onToggle(id)}
         onDoubleClick={() => onUpdate(id)}
       >
@@ -38,7 +38,7 @@ export default function TodoItemList({
         </DeleteBtn>
       </TodoItemDiv>
       <UpdatedInput
-        className={updated ? "updated" : ""} // updated가 true면 클래스명이 "updated", false면 ""
+        isUpdated={updated} // updated가 true면 클래스명이 "updated", false면 ""
         placeholder="수정할 내용을 작성하고 엔터를 누르세요."
         onChange={(e) => onUpdateChange(e, id)}
         onKeyUp={(e) => onKeyPress(e, id)}
@@ -98,19 +98,18 @@ const TodoItemListDiv2 = styled.div`
   padding: 10px;
   cursor: pointer;
 `;
-const TodoItemDiv = styled.div`
-  text-decoration: ${(props) =>
-    props.className === "checked" ? "line-through" : "none"};
+const TodoItemDiv = styled.div<{ isChecked: boolean }>`
+  text-decoration: ${(props) => (props.isChecked ? 'line-through' : 'none')};
 `;
 const DeleteBtn = styled.span`
   margin-left: 5px;
   float: right;
   color: white;
 `;
-const UpdatedInput = styled.input`
-  display: ${(props) => (props.className === "updated" ? "inline" : "none")};
+const UpdatedInput = styled.input<{ isUpdated: boolean }>`
+  display: ${(props) => (props.isUpdated ? 'inline' : 'none')};
   border: none;
   outline: none;
   width: 300px;
-  font-family: "Nanum Gothic", sans-serif;
+  font-family: 'Nanum Gothic', sans-serif;
 `;
