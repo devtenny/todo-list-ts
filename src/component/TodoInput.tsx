@@ -10,23 +10,46 @@ interface Props extends TodoListState {
   onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export default class TodoInput extends React.Component<Props> {
-  render() {
-    const { inputText, onChange, onClick, onKeyPress } = this.props;
-    return (
-      <TodoInputDiv>
-        <TodoTextInput
-          value={inputText} // change 되면서 입력된 데이터를 value로
-          placeholder="오늘 할 일을 작성해보세요."
-          onChange={(e) => onChange(e)}
-          onKeyPress={(e) => onKeyPress(e)}
-        ></TodoTextInput>
-        <CreateBtn onClick={onClick}>등록</CreateBtn>
-        <TodoItemListDiv></TodoItemListDiv>
-      </TodoInputDiv>
-    );
-  }
+// 함수형 컴포넌트로 변경 => state 선언과 props만 받아와서 사용하면 될 경우 사용
+// function 함수명 (props: {props 타입}) { return {} ;}
+export default function TodoInput({
+  inputText,
+  onChange,
+  onClick,
+  onKeyPress,
+}: Props) {
+  return (
+    <TodoInputDiv>
+      <TodoTextInput
+        value={inputText} // change 되면서 입력된 데이터를 value로
+        placeholder="오늘 할 일을 작성해보세요."
+        onChange={(e) => onChange(e)}
+        onKeyPress={(e) => onKeyPress(e)}
+      ></TodoTextInput>
+      <CreateBtn onClick={onClick}>등록</CreateBtn>
+      <TodoItemListDiv></TodoItemListDiv>
+    </TodoInputDiv>
+  );
 }
+
+// 클래스형 컴포넌트
+// export default class TodoInput extends React.Component<Props> {
+//   render() {
+//     const { inputText, onChange, onClick, onKeyPress } = this.props;
+//     return (
+//       <TodoInputDiv>
+//         <TodoTextInput
+//           value={inputText} // change 되면서 입력된 데이터를 value로
+//           placeholder="오늘 할 일을 작성해보세요."
+//           onChange={(e) => onChange(e)}
+//           onKeyPress={(e) => onKeyPress(e)}
+//         ></TodoTextInput>
+//         <CreateBtn onClick={onClick}>등록</CreateBtn>
+//         <TodoItemListDiv></TodoItemListDiv>
+//       </TodoInputDiv>
+//     );
+//   }
+// }
 
 const TodoTextInput = styled.input`
   border: none;
