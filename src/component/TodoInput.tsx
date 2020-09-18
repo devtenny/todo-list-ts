@@ -18,6 +18,7 @@ export default function TodoInput({
   onClick,
   onKeyPress,
 }: Props) {
+  // 함수형 컴포넌트에서는 props를 불러올 필요 없이 사용 가능하다
   return (
     <TodoInputDiv>
       <TodoTextInput
